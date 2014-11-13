@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pren1.team30.bluesender" >
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"/>
 
     <application
         android:allowBackup="true"
@@ -17,14 +21,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="pren1.team30.bluesender.ListActivity"
-            android:label="@string/title_activity_list"
-            android:parentActivityName="pren1.team30.bluesender.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="pren1.team30.bluesender.MainActivity" />
         </activity>
     </application>
 

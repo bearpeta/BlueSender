@@ -6,15 +6,18 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 
@@ -25,6 +28,7 @@ public class MainActivity extends Activity {
     private Button button_start;
     private BluetoothAdapter mBluetoothAdapter;
     private Chronometer chronometer;
+    private ArrayList<BluetoothDevice> devices= new ArrayList<BluetoothDevice>();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +40,22 @@ public class MainActivity extends Activity {
 
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
-        startBluetooth();
-        makeVisible();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        checkBluetooth();
 
-        final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                // When discovery finds a device
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                    // Get the BluetoothDevice object from the Intent
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    // Add the name and address to an array adapter to show in a ListView
-                    //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-                }
-            }
-        };
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_UUID);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(mReceiver, filter);
+
+
 
         button_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
             }
         });
@@ -73,6 +74,15 @@ public class MainActivity extends Activity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (mBluetoothAdapter != null) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+        unregisterReceiver(mReceiver);
     }
 
 
@@ -105,6 +115,7 @@ public class MainActivity extends Activity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 Toast.makeText(this,"Bluetooth enabled",Toast.LENGTH_LONG).show();
+                checkBluetooth();
             }
             else{
                 Toast.makeText(this,"Bluetooth disabled",Toast.LENGTH_LONG).show();
@@ -113,26 +124,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void startBluetooth(){
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private void checkBluetooth(){
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
         }
         else{
-
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
-        }
-    }
-
-    private void makeVisible() {
-        if (mBluetoothAdapter.isEnabled()) {
-            Intent discoverableIntent = new
-                    Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-            startActivity(discoverableIntent);
+            else{
+                getBondedDevices();
+                mBluetoothAdapter.startDiscovery();
+            }
         }
     }
 
@@ -143,10 +147,22 @@ public class MainActivity extends Activity {
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
-                //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                devices.add(device);
             }
         }
 
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // Add the name and address to an array adapter to show in a ListView
+                devices.add(device);
+            }
+        }
+    };
 }
