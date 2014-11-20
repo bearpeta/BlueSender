@@ -5,7 +5,6 @@ import pren1.team30.bluesender.R;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 
@@ -14,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,7 +23,7 @@ import android.widget.Toast;
  *
  *
  */
-public class DeviceListActivity extends Activity {
+public class DeviceListActivity extends ActionBarActivity {
 	private ListView mListView;
 	private DeviceListAdapter mAdapter;
 	private ArrayList<BluetoothDevice> mDeviceList;

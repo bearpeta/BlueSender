@@ -11,9 +11,9 @@ import android.content.IntentFilter;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 
 import android.widget.Button;
@@ -24,11 +24,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 	private TextView mStatusTv;
 	private Button mActivateBtn;
 	private Button mPairedBtn;
 	private Button mScanBtn;
+    private Button mSendBtn;
 	
 	private ProgressDialog mProgressDlg;
 	
@@ -46,11 +47,11 @@ public class MainActivity extends Activity {
 		mActivateBtn 		= (Button) findViewById(R.id.btn_enable);
 		mPairedBtn 			= (Button) findViewById(R.id.btn_view_paired);
 		mScanBtn 			= (Button) findViewById(R.id.btn_scan);
+        mSendBtn            = (Button) findViewById(R.id.btn_send_data);
 		
 		mBluetoothAdapter	= BluetoothAdapter.getDefaultAdapter();
 		
 		mProgressDlg 		= new ProgressDialog(this);
-		
 		mProgressDlg.setMessage("Scanning...");
 		mProgressDlg.setCancelable(false);
 		mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
@@ -107,6 +108,13 @@ public class MainActivity extends Activity {
 					}
 				}
 			});
+
+            mSendBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 			
 			if (mBluetoothAdapter.isEnabled()) {
 				showEnabled();

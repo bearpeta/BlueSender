@@ -13,6 +13,7 @@
     <string name="text_view_paired">Paired Devices</string>
     <string name="text_scan_devices">Scan Devices</string>
     <string name="text_stop_scan">Scan Devices</string>
+    <string name="text_send_data">Send data</string>
     
     <string name="text_list_paired_devices">Paired Devices</string>
     <string name="text_list_devices">List of Devices</string>
