@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import android.support.v7.app.ActionBarActivity;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -77,16 +79,18 @@ public class DeviceListActivity extends ActionBarActivity {
         try {
             Method method = device.getClass().getMethod("createBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
+            MainActivity.isConnected = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void unpairDevice(BluetoothDevice device) {
         try {
             Method method = device.getClass().getMethod("removeBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
-            
+            MainActivity.isConnected = false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,6 +112,7 @@ public class DeviceListActivity extends ActionBarActivity {
 	        	 
 	        	 mAdapter.notifyDataSetChanged();
 	        }
+
 	    }
 	};
 }

@@ -25,7 +25,9 @@ import android.bluetooth.BluetoothDevice;
 
 
 public class MainActivity extends ActionBarActivity {
-	private TextView mStatusTv;
+	public static boolean isConnected = false;
+
+    private TextView mStatusTv;
 	private Button mActivateBtn;
 	private Button mPairedBtn;
 	private Button mScanBtn;
@@ -112,10 +114,10 @@ public class MainActivity extends ActionBarActivity {
             mSendBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Toast.makeText(getApplicationContext(),"Sended", Toast.LENGTH_SHORT).show();
                 }
             });
-			
+
 			if (mBluetoothAdapter.isEnabled()) {
 				showEnabled();
 			} else {
@@ -129,10 +131,24 @@ public class MainActivity extends ActionBarActivity {
 		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
 		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        //filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        //filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
 		
 		registerReceiver(mReceiver, filter);
 	}
-	
+
+    @Override
+    public void onResume(){
+        if(isConnected)
+        {
+            mSendBtn.setEnabled(true);
+        }
+        else{
+            mSendBtn.setEnabled(false);
+        }
+        super.onResume();
+    }
+
 	@Override
 	public void onPause() {
 		if (mBluetoothAdapter != null) {
