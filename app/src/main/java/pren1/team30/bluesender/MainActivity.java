@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
 		mBluetoothAdapter	= BluetoothAdapter.getDefaultAdapter();
 		
 		mProgressDlg 		= new ProgressDialog(this);
-		mProgressDlg.setMessage("Scanning...");
+		mProgressDlg.setMessage("scanning...");
 		mProgressDlg.setCancelable(false);
 		mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 		    @Override
