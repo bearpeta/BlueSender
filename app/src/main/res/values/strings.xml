@@ -11,7 +11,7 @@
     <string name="text_disable">Disable</string>
     
     <string name="text_view_paired">Paired Devices</string>
-    <string name="text_scan_devices">Scan Devices</string>
+    <string name="text_show_devices">Show Devices</string>
     <string name="text_stop_scan">Scan Devices</string>
     <string name="text_send_data">Send data</string>
     
@@ -19,5 +19,23 @@
     <string name="text_list_devices">List of Devices</string>
     
     <string name="text_pair">Pair</string>
+
+
+
+    <string name="hello">Hello World, RemoteBluetooth!</string>
+    <string name="btn_find">Find Device</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Remote Bluetooth</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="scanning">scanning for devices...</string>
+    <string name="none_found">No devices found</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="connect">Connect a device</string>
+    <string name="discoverable">Make discoverable</string>
+    <string name="title_connected_to">connected: </string>
+    <string name="title_connecting">connecting...</string>
+    <string name="title_not_connected">not connected</string>
     
 </resources>
