@@ -9,8 +9,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -37,12 +39,12 @@ public class BluetoothCommandService {
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+    public static final int STATE_CLOSED = 4; // connection is closed
     
     // Constants that indicate command to computer
-    public static final int EXIT_CMD = -1;
-    public static final int VOL_UP = 1;
-    public static final int VOL_DOWN = 2;
-    public static final int MOUSE_MOVE = 3;
+    public static final int EXIT = -1;
+    public static final int START = 1;
+
     
     /**
      * Constructor. Prepares a new BluetoothChat session.
@@ -324,10 +326,19 @@ public class BluetoothCommandService {
                 try {
                 	// Read from the InputStream
                     int bytes = mmInStream.read(buffer);
+                    mHandler.obtainMessage(MainActivity.MESSAGE_READ, -1).sendToTarget();
 
+                    /*if (bytes == EXIT) {
+                        mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes).sendToTarget();
+                        break;
+                    }
+                    else{
+                        mHandler.obtainMessage(MainActivity.MESSAGE_READ, buffer).sendToTarget();
+                        break;
+                    }*/
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    //mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer)
+                      //      .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
@@ -366,7 +377,7 @@ public class BluetoothCommandService {
 
         public void cancel() {
             try {
-            	mmOutStream.write(EXIT_CMD);
+            	mmOutStream.write(EXIT);
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "close() of connect socket failed", e);

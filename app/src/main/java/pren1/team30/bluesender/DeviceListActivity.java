@@ -186,40 +186,4 @@ public class DeviceListActivity extends ActionBarActivity {
             }
         }
     };
-
-    /*
-	@Override
-	public void onDestroy() {
-		unregisterReceiver(mPairReceiver);
-		
-		super.onDestroy();
-	}*/
-	
-	/*
-	private void showToast(String message) {
-		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-	}
-	
-    private void pairDevice(BluetoothDevice device) {
-        try {
-            Method method = device.getClass().getMethod("createBond", (Class[]) null);
-            method.invoke(device, (Object[]) null);
-            MainActivity.isConnected = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void unpairDevice(BluetoothDevice device) {
-        try {
-            Method method = device.getClass().getMethod("removeBond", (Class[]) null);
-            method.invoke(device, (Object[]) null);
-            MainActivity.isConnected = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-
 }

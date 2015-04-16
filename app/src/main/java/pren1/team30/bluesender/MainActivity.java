@@ -1,16 +1,8 @@
 package pren1.team30.bluesender;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,13 +10,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
-import android.app.ProgressDialog;
-
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +48,15 @@ public class MainActivity extends ActionBarActivity {
     private BluetoothCommandService mCommandService = null;
 
     private String mTitle;
+    private TextView timer;
+    private Button resetWatchButton;
+    private long startTime;
+    private long stopTime;
+    private long elapsedTime;
+    private final int REFRESH_RATE = 100;
+    private String hours,minutes,seconds,milliseconds;
+    private long secs,mins,hrs,msecs;
+    private boolean stopped;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +64,22 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
+        timer = (TextView) findViewById(R.id.timer);
+        stopped = false;
+
         Button sendBtn = (Button) findViewById(R.id.btn_send_data);
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCommandService.write(BluetoothCommandService.VOL_UP);
+                mCommandService.write(BluetoothCommandService.START);
+                if(stopped){
+                    startTime = System.currentTimeMillis() - elapsedTime;
+                }
+                else{
+                    startTime = System.currentTimeMillis();
+                }
+                mHandler.removeCallbacks(startTimer);
+                mHandler.postDelayed(startTimer, 0);
             }
         });
 
@@ -84,11 +91,17 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-
+        resetWatchButton = (Button) findViewById(R.id.btn_reset_watch);
+        resetWatchButton.setVisibility(View.INVISIBLE);
+        resetWatchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopped = false;
+                timer.setText("00:00:00");
+            }
+        });
 
         mTitle = getResources().getString(R.string.app_name);
-
-
 
         // Get the local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -164,6 +177,11 @@ public class MainActivity extends ActionBarActivity {
                             break;
                     }
                     break;
+                case MESSAGE_READ:
+                    mHandler.removeCallbacks(startTimer);
+                    stopped = true;
+                    resetWatchButton.setVisibility(View.VISIBLE);
+                    break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
@@ -212,6 +230,57 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    private Runnable startTimer = new Runnable() {
+        public void run() {
+            elapsedTime = System.currentTimeMillis() - startTime;
+            updateTimer(elapsedTime);
+            mHandler.postDelayed(this,REFRESH_RATE);
+        }
+    };
+
+    private void updateTimer (float time){
+        secs = (long)(time/1000);
+        mins = (long)((time/1000)/60);
+        hrs = (long)(((time/1000)/60)/60);
+
+		/* Convert the seconds to String
+		 * and format to ensure it has
+		 * a leading zero when required
+		 */
+        secs = secs % 60;
+        seconds=String.valueOf(secs);
+        if(secs == 0){
+            seconds = "00";
+        }
+        if(secs <10 && secs > 0){
+            seconds = "0"+seconds;
+        }
+
+		/* Convert the minutes to String and format the String */
+
+        mins = mins % 60;
+        minutes=String.valueOf(mins);
+        if(mins == 0){
+            minutes = "00";
+        }
+        if(mins <10 && mins > 0){
+            minutes = "0"+minutes;
+        }
+
+    	/* Convert the hours to String and format the String */
+
+        hours=String.valueOf(hrs);
+        if(hrs == 0){
+            hours = "00";
+        }
+        if(hrs <10 && hrs > 0){
+            hours = "0"+hours;
+        }
+
+		/* Setting the timer text to the elapsed time */
+        timer.setText(hours + ":" + minutes + ":" + seconds);
     }
 
 
